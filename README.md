@@ -36,13 +36,13 @@ STEP (a) - How to generate Efsm?
    the project panel and selecting "Run As ATL transformation".
 
 
-STEP (b) - How to generate Stubs?
+STEP (b) - How to generate SUT?
 =================================
 
 1. Clone the Sd2Stubs folder
-2. In Eclipse, choose "File">"Import..." and select the Sd2Stubs folder
+2. In Eclipse, choose "File">"Import..." and select the Sd2SUT folder
 3. Project opens
-4. Run the generateStubs.mtl by right-clicking Sd2Stubs/src/Sd2Stubs.main/generateStubs.mtl in
+4. Run the generateStubs.mtl by right-clicking Sd2Stubs/src/Sd2SUT.main/generateSUT.mtl in
    the project panel and selecting "Run As Launch Acceleo Application".
    
    
