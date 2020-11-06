@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sequencediagram:SequenceDiagram xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:sequencediagram="http://www.example.org/sequencediagram" name="AtendimentoUBS">
+  <lifeLines name="Recepcionista" start="true">
+    <abstractObject xsi:type="sequencediagram:Actor" name="Recepcionista"/>
+  </lifeLines>
+  <lifeLines name="SistemaUBS">
+    <abstractObject xsi:type="sequencediagram:Object" name="SistemaUBS"/>
+  </lifeLines>
+  <lifeLines name="cartaoSUS">
+    <abstractObject xsi:type="sequencediagram:Object" name="cartaoSUS"/>
+  </lifeLines>
+  <lifeLines name="Agendamento">
+    <abstractObject xsi:type="sequencediagram:Object" name="Agendamento"/>
+  </lifeLines>
+  <lifeLines name="TipoProblema">
+    <abstractObject xsi:type="sequencediagram:Object" name="TipoProblema"/>
+  </lifeLines>
+  <fragments xsi:type="sequencediagram:CombinedFragment" name="validaCartao" interactionOperator="loop">
+    <operands guard="cartaoSUSOk = false">
+      <fragOpds xsi:type="sequencediagram:Message" name="insereCartao" target="//@lifeLines.1" source="//@lifeLines.0">
+        <operation returnType="void" guard="">
+          <args argName="numeroSUS" argType="int" lifeline="//@lifeLines.0"/>
+        </operation>
+      </fragOpds>
+      <fragOpds xsi:type="sequencediagram:Message" name="validaCartao" target="//@lifeLines.2" source="//@lifeLines.1">
+        <operation returnVariable="cartaoSUSOk" returnType="boolean" guard="this.numeroSUS = numeroSUS">
+          <args argName="numeroSUS" argType="int" lifeline="//@lifeLines.0"/>
+        </operation>
+      </fragOpds>
+      <fragOpds xsi:type="sequencediagram:Message" name="cartaoSUSOk" type="re" target="//@lifeLines.1" source="//@lifeLines.2"/>
+      <fragOpds xsi:type="sequencediagram:Message" name="cartaoInvalido" type="re" target="//@lifeLines.0" source="//@lifeLines.1"/>
+    </operands>
+  </fragments>
+  <fragments xsi:type="sequencediagram:Message" name="validaAtividadeAgendada" target="//@lifeLines.3" source="//@lifeLines.1">
+    <operation returnVariable="atividadeAgendada" returnType="boolean" guard="this.numeroSUS = numeroSUS">
+      <args argName="numeroSUS" argType="int" lifeline="//@lifeLines.0"/>
+    </operation>
+  </fragments>
+  <fragments xsi:type="sequencediagram:Message" name="atividadeAgendada" type="re" target="//@lifeLines.1" source="//@lifeLines.3"/>
+  <fragments xsi:type="sequencediagram:CombinedFragment" name="atividadeAgendada" interactionOperator="alt">
+    <operands guard="atividadeAgendada = true">
+      <fragOpds xsi:type="sequencediagram:Message" name="getTipoAtividadeAgendada" target="//@lifeLines.3" source="//@lifeLines.1">
+        <operation returnVariable="tipoAtividadeAgendada" returnType="String" guard="this.numeroSUS = numeroSUS">
+          <args argName="numeroSUS" argType="int" lifeline="//@lifeLines.0"/>
+        </operation>
+      </fragOpds>
+      <fragOpds xsi:type="sequencediagram:CombinedFragment" name="tipoAtividadeAgendada" interactionOperator="alt">
+        <operands guard="tipoAtividadeAgendada = 'Vacina'">
+          <fragOpds xsi:type="sequencediagram:Message" name="encaminhaUsuarioVacina" type="si" target="//@lifeLines.0" source="//@lifeLines.1"/>
+        </operands>
+        <operands guard="tipoAtividadeAgendada = 'Exame'">
+          <fragOpds xsi:type="sequencediagram:Message" name="encaminhaUsuarioExame" type="si" target="//@lifeLines.0" source="//@lifeLines.1"/>
+        </operands>
+        <operands guard="tipoAtividadeAgendada = 'Procedimento'">
+          <fragOpds xsi:type="sequencediagram:Message" name="encaminhaUsuarioProcedimento" type="si" target="//@lifeLines.0" source="//@lifeLines.1"/>
+        </operands>
+      </fragOpds>
+    </operands>
+    <operands guard="atividadeAgendada = false">
+      <fragOpds xsi:type="sequencediagram:Message" name="inseredemandaUsuario" target="//@lifeLines.1" source="//@lifeLines.0">
+        <operation returnType="void">
+          <args argName="descricaoProblema" argType="String" lifeline="//@lifeLines.0"/>
+        </operation>
+      </fragOpds>
+      <fragOpds xsi:type="sequencediagram:Message" name="validaProblemaAgudo" target="//@lifeLines.4" source="//@lifeLines.1">
+        <operation returnVariable="problemaAgudo" returnType="boolean" guard="this.descricaoProblema.contains('agudo')">
+          <args argName="descricaoProblema" argType="String" lifeline="//@lifeLines.0"/>
+        </operation>
+      </fragOpds>
+      <fragOpds xsi:type="sequencediagram:Message" name="problemaAgudo" type="re" target="//@lifeLines.1" source="//@lifeLines.4"/>
+      <fragOpds xsi:type="sequencediagram:CombinedFragment" name="problemaAgudo" interactionOperator="alt">
+        <operands guard="problemaAgudo = true">
+          <fragOpds xsi:type="sequencediagram:Message" name="verificaTipoProfissional" target="//@lifeLines.4" source="//@lifeLines.1">
+            <operation returnVariable="tipoProfissional" returnType="String" guard="">
+              <args argName="descricaoProblema" argType="String" lifeline="//@lifeLines.0"/>
+            </operation>
+          </fragOpds>
+          <fragOpds xsi:type="sequencediagram:Message" name="tipoProfissional" type="re" target="//@lifeLines.1" source="//@lifeLines.4"/>
+          <fragOpds xsi:type="sequencediagram:CombinedFragment" name="verificaTipoProfissional" interactionOperator="alt">
+            <operands guard="descricaoProblema = ">
+              <fragOpds xsi:type="sequencediagram:Message" name="tipoProfissional = 'Dentista'" type="si" target="//@lifeLines.0" source="//@lifeLines.4"/>
+            </operands>
+            <operands guard="descricaoProblema = "/>
+            <operands guard="descricaoProblema = "/>
+          </fragOpds>
+        </operands>
+        <operands guard="problemaAgudo = false">
+          <fragOpds xsi:type="sequencediagram:Message" name="insereAgendamento" target="//@lifeLines.3" source="//@lifeLines.0">
+            <operation returnType="void">
+              <args argName="numeroSUS" argType="int" lifeline="//@lifeLines.0"/>
+            </operation>
+          </fragOpds>
+          <fragOpds xsi:type="sequencediagram:Message" name="validaAgendamento" target="//@lifeLines.3" source="//@lifeLines.1">
+            <operation returnVariable="agendamentoOk" returnType="boolean" guard="this.numeroSUS = numeroSUS">
+              <args argName="numeroSUS" argType="int" lifeline="//@lifeLines.0"/>
+            </operation>
+          </fragOpds>
+          <fragOpds xsi:type="sequencediagram:Message" name="agendamentoOk" type="re" target="//@lifeLines.1" source="//@lifeLines.3"/>
+          <fragOpds xsi:type="sequencediagram:Message" name="agendamentoEfetuado" type="si" target="//@lifeLines.0" source="//@lifeLines.1"/>
+        </operands>
+      </fragOpds>
+    </operands>
+  </fragments>
+  <fragments xsi:type="sequencediagram:Message" name="sair" type="si" target="//@lifeLines.1" source="//@lifeLines.0"/>
+</sequencediagram:SequenceDiagram>

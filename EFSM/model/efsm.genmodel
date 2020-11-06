@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel"
+    modelDirectory="/efsm/src-gen" creationIcons="false" editDirectory="/efsm.edit/src-gen"
+    editorDirectory="/efsm.editor/src-gen" modelPluginID="efsm" modelName="Efsm" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
+    codeFormatting="true" importerID="org.eclipse.emf.importer.ecore" complianceLevel="8.0"
+    copyrightFields="false" operationReflection="true" importOrganizing="true">
+  <foreignModel>efsm.ecore</foreignModel>
+  <testsDirectory xsi:nil="true"/>
+  <genPackages prefix="Efsm" basePackage="Efsm" disposableProviderFactory="true" ecorePackage="efsm.ecore#/">
+    <genClasses ecoreClass="efsm.ecore#//EFSM">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute efsm.ecore#//EFSM/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference efsm.ecore#//EFSM/transitions"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference efsm.ecore#//EFSM/initialstate"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference efsm.ecore#//EFSM/states"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference efsm.ecore#//EFSM/contextVariables"/>
+    </genClasses>
+    <genClasses ecoreClass="efsm.ecore#//Transition">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute efsm.ecore#//Transition/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute efsm.ecore#//Transition/output"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference efsm.ecore#//Transition/source"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference efsm.ecore#//Transition/target"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute efsm.ecore#//Transition/guard"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute efsm.ecore#//Transition/action"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference efsm.ecore#//Transition/input"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference efsm.ecore#//Transition/event"/>
+    </genClasses>
+    <genClasses ecoreClass="efsm.ecore#//InitialState"/>
+    <genClasses ecoreClass="efsm.ecore#//AbstractState">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute efsm.ecore#//AbstractState/name"/>
+    </genClasses>
+    <genClasses ecoreClass="efsm.ecore#//State"/>
+    <genClasses ecoreClass="efsm.ecore#//ContextVariable">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute efsm.ecore#//ContextVariable/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute efsm.ecore#//ContextVariable/type"/>
+    </genClasses>
+    <genClasses ecoreClass="efsm.ecore#//Input">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute efsm.ecore#//Input/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference efsm.ecore#//Input/variables"/>
+    </genClasses>
+    <genClasses ecoreClass="efsm.ecore#//Event">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute efsm.ecore#//Event/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute efsm.ecore#//Event/return"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute efsm.ecore#//Event/class"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference efsm.ecore#//Event/args"/>
+    </genClasses>
+    <genClasses ecoreClass="efsm.ecore#//Param">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute efsm.ecore#//Param/argName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute efsm.ecore#//Param/argType"/>
+    </genClasses>
+    <genClasses ecoreClass="efsm.ecore#//Variable">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute efsm.ecore#//Variable/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute efsm.ecore#//Variable/type"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute efsm.ecore#//Variable/class"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>

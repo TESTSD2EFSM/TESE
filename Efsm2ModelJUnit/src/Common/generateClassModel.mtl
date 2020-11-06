@@ -1,0 +1,59 @@
+[comment encoding = UTF-8 /]
+[module generateClassModel('http://www.example.org/efsm')]
+
+
+[template public generateClassModel(aEFSM : EFSM)]
+
+[file (aEFSM.name+'Model.java', false, 'UTF-8')]
+import nz.ac.waikato.modeljunit.Action;
+import nz.ac.waikato.modeljunit.FsmModel;
+
+public class [aEFSM.name+'Model implements FsmModel'/] {
+	private [aEFSM.name+'Adapter adapter = new '+aEFSM.name+'Adapter()'/];
+
+    [for (obj:ContextVariable|aEFSM.contextVariables)]
+	private [obj.type/] [obj.name/];[lineSeparator()/][/for]
+		
+	private enum State{[aEFSM.initialstate.name/], [for (obj:State|aEFSM.states)][if (obj = aEFSM.states->last())][obj.name/][else][obj.name/], [/if][/for]}
+	private State state = State.[aEFSM.initialstate.name/];
+
+	public Object getState() {
+		return state;
+	}
+
+	public void reset(boolean arg0) {
+		state = State.[aEFSM.initialstate.name/];
+	}
+
+	[for (input:String|self.transitions.input.name->asOrderedSet())]
+	@Action
+	public void [input/]() {
+	[for (obj:Transition|aEFSM.transitions)]
+	  [if obj.input.name = input]
+		if (state == State.[obj.source.name/]) {
+		[if (obj.event->isEmpty() = false)]
+		  [if (obj.event.return = 'void')]
+			adapter.[obj.event.name/]();
+			state = State.[obj.target.name/];
+		  [else]
+		    [if obj.action.substring(1, 1) = '!'][obj.action.substring(4, obj.action.substring(4).index(' ')+3)/][else][obj.output.substring(1, obj.output.index(' ')-1)/][/if] = adapter.[obj.event.name/]();
+           [if obj.action <> '']
+			if ([obj.action/]){
+				state = State.[obj.target.name/];
+			}
+           [else]
+            state = State.[obj.target.name/];
+		   [/if]
+          [/if]
+		[else]
+			state = State.[obj.target.name/];
+	  	[/if]
+		}
+	  [/if]
+	[/for]
+	}
+
+	[/for]
+}
+[/file]
+[/template]

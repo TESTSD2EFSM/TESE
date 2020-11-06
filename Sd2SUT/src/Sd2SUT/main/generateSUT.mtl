@@ -1,0 +1,82 @@
+[comment encoding = UTF-8 /]
+[module generateSUT('http://www.example.org/sequencediagram')]
+
+
+[template public generateSUT(aSD : SequenceDiagram)]
+[comment @main/]
+[for (f:LifeLine|aSD.lifeLines)]
+[file (f.name+'.java', false, 'UTF-8')]
+public class [f.name/] {
+  [for (a:String|aSD.fragments.eAllContents(Operation)->select(o|o.returnType <> 'void' and o.args->notEmpty() and o.args->at(i).lifeline.name.toString() = f.name).args.argName->union(aSD.fragments->filter(Operation)->select(o|o.returnType <> 'void' and o.args->notEmpty() and o.args->at(i).lifeline.name.toString() = f.name).args.argName)->union(aSD.fragments.eAllContents(Message)->select(m|m.target.name.toString() = f.name and m.operation->notEmpty() and m.operation.returnType <> 'void' and m.operation.args->notEmpty() and m.operation.guard.toString().contains('this') = true).operation.args.argName)->union(aSD.fragments->filter(Message)->select(m|m.target.name.toString() = f.name and m.operation->notEmpty() and m.operation.returnType <> 'void' and m.operation.args->notEmpty() and m.operation.guard.toString().contains('this') = true).operation.args.argName)->asOrderedSet())]
+	private [aSD.fragments.eAllContents(Param)->select(p| p.argName = a).argType->union(aSD.fragments->filter(Param)->select(p| p.argName = a).argType)->asOrderedSet()->at(1)/] [a/] = ;  
+  [/for]
+  [for (r:String|aSD.fragments.eAllContents(Message)->select(m|m.target.name.toString() = f.name and m.name.substring(1, 3) = 'get' and m.operation.returnType <> 'void').operation.returnVariable->union(aSD.fragments->filter(Message)->select(m|m.target.name.toString() = f.name and m.name.substring(1, 3) = 'get' and m.operation.returnType <> 'void').operation.returnVariable)->asOrderedSet())] 	
+	private [aSD.fragments.eAllContents(Operation)->select(o| o.returnVariable = r).returnType->union(aSD.fragments->filter(Operation)->select(o| o.returnVariable = r).returnType)->asOrderedSet()->at(1)/] [r/] = ;  
+  [/for]
+
+  [for (a:String|aSD.fragments.eAllContents(Operation)->select(o|o.returnType <> 'void' and o.args->notEmpty() and o.args->at(i).lifeline.name.toString() = f.name).args.argName->union(aSD.fragments->filter(Operation)->select(o|o.returnType <> 'void' and o.args->notEmpty() and o.args->at(i).lifeline.name.toString() = f.name).args.argName)->union(aSD.fragments.eAllContents(Message)->select(m|m.target.name.toString() = f.name and m.operation->notEmpty() and m.operation.returnType <> 'void' and m.operation.args->notEmpty() and m.operation.guard.toString().contains('this') = true).operation.args.argName)->union(aSD.fragments->filter(Message)->select(m|m.target.name.toString() = f.name and m.operation->notEmpty() and m.operation.returnType <> 'void' and m.operation.args->notEmpty() and m.operation.guard.toString().contains('this') = true).operation.args.argName)->asOrderedSet())]
+	public [aSD.fragments.eAllContents(Param)->select(p| p.argName = a).argType->union(aSD.fragments->filter(Param)->select(p| p.argName = a).argType)->asOrderedSet()->at(1)/] get[a.toUpperFirst()/]() {
+		return this.[a/];
+	}  
+  [/for]
+
+  [for (r:String|aSD.fragments.eAllContents(Message)->select(m|m.target.name.toString() = f.name and m.name.substring(1, 3) = 'get' and m.operation.returnType <> 'void').operation.returnVariable->union(aSD.fragments->filter(Message)->select(m|m.target.name.toString() = f.name and m.name.substring(1, 3) = 'get' and m.operation.returnType <> 'void').operation.returnVariable)->asOrderedSet())] 	
+	public [aSD.fragments.eAllContents(Operation)->select(o| o.returnVariable = r).returnType->union(aSD.fragments->filter(Operation)->select(o| o.returnVariable = r).returnType)->asOrderedSet()->at(1)/] get[r.toUpperFirst()/]([for (p:String|aSD.fragments.eAllContents(Message)->select(m|m.target.name.toString() = f.name and m.name.substring(1, 3) = 'get' and m.operation.returnType <> 'void' and m.operation.args->notEmpty()).operation.args.argName->union(aSD.fragments->filter(Message)->select(m|m.target.name.toString() = f.name and m.name.substring(1, 3) = 'get' and m.operation.returnType <> 'void').operation.args.argName)->asOrderedSet())][if i = 1][aSD.fragments.eAllContents(Param)->select(par| par.argName = p).argType->union(aSD.fragments->filter(Param)->select(par| par.argName = p).argType)->asOrderedSet()->at(1)/] [p/][else], [aSD.fragments.eAllContents(Param)->select(par| par.argName = p).argType->union(aSD.fragments->filter(Param)->select(par| par.argName = p).argType)->asOrderedSet()->at(1)/] [p/][/if][/for]){
+	[for (o:Operation|aSD.fragments.eAllContents(Message)->select(m|m.operation->notEmpty() and m.operation.returnVariable = r and m.name.substring(1, 3) = 'get' and m.operation.returnType <> 'void').operation->union(aSD.fragments->filter(Message)->select(m|m.operation->notEmpty() and m.operation.returnVariable = r and m.name.substring(1, 3) = 'get' and m.operation.returnType <> 'void').operation)->at(1))]
+		[if o.guard->isEmpty() = false]
+		if ([o.guard.replaceAll('\'', '"').replaceAll(' = ',' == ').replaceAll(' <> ',' != ').replaceAll(' and ',' && ').replaceAll(' or ',' || ')/]){
+			return this.[r/];
+		}
+		else {
+		  [if o.returnType = 'boolean']
+			return false;
+		  [else]
+			return null;
+		  [/if]
+		}
+		[else]
+		return this.[r/];
+		[/if]
+	[/for]
+	}  
+  [/for]
+
+  [for (a:String|aSD.fragments.eAllContents(Message)->select(m|m.target.name.toString() = f.name and m.operation->notEmpty() and m.name.substring(1, 3) <> 'get').name->union(aSD.fragments->filter(Message)->select(m|m.target.name.toString() = f.name and m.operation->notEmpty() and m.name.substring(1, 3) <> 'get').name)->asOrderedSet())]
+	public [aSD.fragments.eAllContents(Message)->select(m| m.name = a and m.operation->notEmpty()).operation.returnType->union(aSD.fragments->filter(Message)->select(m| m.name = a and m.operation->notEmpty()).operation.returnType)->asOrderedSet()->at(1)/] [a/]([for (p:String|aSD.fragments.eAllContents(Message)->select(m|m.target.name.toString() = f.name and m.operation->notEmpty() and m.name = a and m.operation.args->notEmpty()).operation.args.argName->union(aSD.fragments->filter(Message)->select(m|m.target.name.toString() = f.name and m.operation->notEmpty() and m.name = a and m.operation.args->notEmpty()).operation.args.argName)->asOrderedSet())][if i = 1][aSD.fragments.eAllContents(Param)->select(par| par.argName = p).argType->union(aSD.fragments->filter(Param)->select(par| par.argName = p).argType)->asOrderedSet()->at(1)/] [p/][else], [aSD.fragments.eAllContents(Param)->select(par| par.argName = p).argType->union(aSD.fragments->filter(Param)->select(par| par.argName = p).argType)->asOrderedSet()->at(1)/] [p/][/if][/for]) {
+	[for (o:Operation|aSD.fragments.eAllContents(Message)->select(m|m.name = a and m.operation->notEmpty()).operation->union(aSD.fragments->filter(Message)->select(m|m.name = a and m.operation->notEmpty()).operation)->at(1))]
+	  [if (o.returnType = 'boolean')]
+	   [if o.guard->isEmpty() = false]
+		if ([o.guard.replaceAll('\'', '"').replaceAll(' = ',' == ').replaceAll(' <> ',' != ').replaceAll(' and ',' && ').replaceAll(' or ',' || ')/]){
+			return true;
+		}
+		else{
+			return false;
+		}
+       [else]
+		return [o.returnVariable/];
+	   [/if]
+      [else]
+       [if (o.returnType <> 'void')]
+	   [if o.guard->isEmpty() = false]
+		if ([o.guard.replaceAll('\'', '"').replaceAll(' = ',' == ').replaceAll(' <> ',' != ').replaceAll(' and ',' && ').replaceAll(' or ',' || ')/]){
+			return [o.returnVariable/];
+		}
+       [else]
+		[o.returnType/] [o.returnVariable/] = null;
+		[for (io:InteractionOperand|aSD.fragments.eAllContents(CombinedFragment)->select(c|c.name = a).operands->union(aSD.fragments->filter(CombinedFragment)->select(c|c.name = a).operands))]
+		if ([io.guard.replaceAll('\'', '"').replaceAll(' = ',' == ').replaceAll(' <> ',' != ').replaceAll(' and ',' && ').replaceAll(' or ',' || ')/]){
+			[io.fragOpds->filter(Message).name.replaceAll('\'', '"')/];
+		}
+		[/for]
+		return [o.returnVariable/];
+       [/if]
+       [/if]
+      [/if]
+	 [/for]
+	}  
+  [/for]
+
+}
+[/file]
+[/for]
+[/template]

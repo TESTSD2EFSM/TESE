@@ -1,0 +1,46 @@
+[comment encoding = UTF-8 /]
+[module generateClassJUnit('http://www.example.org/efsm')]
+
+[template public generateClassJUnit(aEFSM : EFSM){id: String = '111';
+                                                  psw: String = '123';
+                                                  period: String = '20192';
+                                                  classId: String = '1';}]
+
+[file (aEFSM.name+'JUnit.java', false, 'UTF-8')]
+import static org.junit.Assert.*;
+
+import org.junit.Test;
+
+public class [aEFSM.name/]JUnit {
+
+[for (obj:Transition|aEFSM.transitions)]
+  [if ((obj.action <> '') and (obj.event->notEmpty()))]
+    [if obj.action.strstr('true') = true or obj.action.strstr('not') = true]
+	@Test
+	public void test[obj.event.name.toUpperFirst()/]01() {
+		[obj.event.class/] [obj.event.class.toLowerFirst()/] = new [obj.event.class/]();
+		[obj.event.return/] output = [obj.event.class.toLowerFirst()/].[obj.event.name/]([for (obj.input.variables)][if i = 1][if obj.input.variables.name->at(i) = 'id']"[id/]"[else][if obj.input.variables.name->at(i) = 'psw']"[psw/]"[else][if obj.input.variables.name->at(i) = 'period']"[period/]"[else]"[classId/]"[/if][/if][/if][else][if obj.input.variables.name->at(i) = 'id'],"[id/]"[else][if obj.input.variables.name->at(i) = 'psw'],"[psw/]"[else][if obj.input.variables.name->at(i) = 'period'],"[period/]"[else],"[classId/]"[/if][/if][/if][/if][/for]);
+	  [if obj.event.return = 'boolean']
+		assertTrue(output);
+      [else]
+        assertEquals(output, );
+      [/if]
+    }
+	[else]
+	@Test
+	public void test[obj.input.name.toUpperFirst()/]02() {
+		[obj.event.class/] [obj.event.class.toLowerFirst()/] = new [obj.event.class/]();
+		[obj.event.return/] output = [obj.event.class.toLowerFirst()/].[obj.event.name/]([for (obj.input.variables)][if i = 1][if obj.input.variables.name->at(i) = 'id']"[id.toInteger()*2/]"[else][if obj.input.variables.name->at(i) = 'psw']"[psw.toInteger()*2/]"[else][if obj.input.variables.name->at(i) = 'period']"[period/]"[else]"[classId/]"[/if][/if][/if][else][if obj.input.variables.name->at(i) = 'id'],"[id.toInteger()*2/]"[else][if obj.input.variables.name->at(i) = 'psw'],"[psw.toInteger()*2/]"[else][if obj.input.variables.name->at(i) = 'period'],"[period/]"[else],"[classId.toInteger()*2/]"[/if][/if][/if][/if][/for]);
+	  [if obj.event.return = 'boolean']
+		assertFalse(output);
+      [else]
+        assertEquals(output, );
+      [/if]
+	}
+	[/if]
+  [/if]
+[/for]
+}
+
+[/file]
+[/template]

@@ -1,0 +1,25 @@
+[comment encoding = UTF-8 /]
+[module generateClassAdapter('http://www.example.org/efsm')]
+
+[template public generateClassAdapter(aEFSM : EFSM)]
+
+[file (aEFSM.name+'Adapter.java', false, 'UTF-8')]
+public class [aEFSM.name/]Adapter {
+  [for (class: String|self.transitions.input->select(v |v.variables->notEmpty()).variables.class->union(self.transitions->select(e | e.event->notEmpty()).event.class)->asOrderedSet())]
+	private [class/] [class.toLowerFirst()/] = new [class/]();
+  [/for]
+
+  [for (event: String|self.transitions.event->select(e | e->notEmpty()).name->asOrderedSet())]
+   [for (obj:Transition|aEFSM.transitions->select(o | (o.event->notEmpty()) and (o.event.name = event)))] 	
+	[if i = 1]
+	public [obj.event.return/] [event/](){
+	  [if obj.event.return <> 'void']
+    	return [obj.event.class.toLowerFirst()/].[obj.event.name/]([for (obj.input.variables)][if i = 1][obj.input.variables.class.toLowerFirst()->at(i)/].get[obj.input.variables.name.toUpperFirst()->at(i)/]()[else],[obj.input.variables.class.toLowerFirst()->at(i)/].get[obj.input.variables.name.toUpperFirst()->at(i)/]()[/if][/for]);
+      [/if]
+    [/if]
+   [/for]
+	}
+  [/for]	
+}	
+[/file]
+[/template]
